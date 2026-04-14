@@ -3,172 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 人才测评分析系统</title>
-    <!-- 引入 PDF.js 库，用于在浏览器中读取 PDF 文字 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <title>生命角色规划工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #007bff; --bg: #f4f7f6; }
-        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
-        .card { background: #fff; width: 100%; max-width: 500px; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        h2 { margin: 0 0 10px; color: #1a1a1a; font-size: 22px; }
-        .desc { color: #666; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
-        
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
-        input[type="text"], input[type="password"], input[type="file"] { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: all 0.2s; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
-        
-        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #0056b3; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-
-        #resultArea { margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--primary); display: none; }
-        .loading { text-align: center; color: #666; font-size: 13px; margin-top: 10px; display: none; }
-        .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #666; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 5px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .api-hint { font-size: 12px; color: #888; margin-top: 5px; }
+        :root { --primary-color: #5e54c7; --secondary-color: #28d8a3; --danger-color: #ff6b6b; --light-gray: #f0f0f0; --dark-gray: #888; --text-color: #333; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #747def, var(--primary-color)); color: var(--text-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        .container { width: 100%; max-width: 450px; margin: auto; }
+        .card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); text-align: center; margin-bottom: 20px; }
+        h1, h2, h3 { font-weight: 600; margin-top: 0; }
+        h1 { font-size: 24px; } h2 { font-size: 18px; text-align: left; margin-bottom: 20px;} h3 { font-size: 16px; color: #555; margin-bottom: 10px; }
+        .description { color: var(--dark-gray); margin-bottom: 30px; }
+        .input-field { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; }
+        .btn { padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
+        .btn-full { width: 100%; }
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #22b88a; }
+        .btn-secondary { background-color: transparent; color: var(--primary-color); font-weight: normal; margin-top: 20px; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        #app-header { color: white; text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; }
+        .charts-wrapper { display: flex; gap: 10px; }
+        .chart-container { width: 50%; text-align: center; }
+        .toggle-buttons { display: flex; justify-content: center; margin-bottom: 20px; }
+        .toggle-buttons button { padding: 8px 20px; border: 1px solid #ccc; background-color: var(--light-gray); cursor: pointer; font-size: 14px; }
+        .toggle-buttons button:first-child { border-radius: 15px 0 0 15px; }
+        .toggle-buttons button:last-child { border-radius: 0 15px 15px 0; border-left: none;}
+        .toggle-buttons button.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .role-manager-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .add-btn { width: 36px; height: 36px; background-color: var(--secondary-color); color: white; border: none; border-radius: 50%; font-size: 24px; display: flex; justify-content: center; align-items: center; line-height: 1; cursor: pointer; }
+        .role-item { display: flex; align-items: center; margin-bottom: 15px; }
+        .role-color-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
+        .role-name { flex-grow: 1; text-align: left; font-weight: 500; }
+        .role-slider-container { flex-grow: 2; display: flex; align-items: center; }
+        .role-slider { width: 100%; margin: 0 10px; cursor: pointer; }
+        .role-percentage { min-width: 45px; text-align: right; font-weight: 500; }
+        .delete-btn { width: 24px; height: 24px; background-color: var(--danger-color); color: white; border: none; border-radius: 50%; font-size: 18px; cursor: pointer; margin-left: 15px; line-height: 1; }
+        .total-percentage { margin-top: 20px; font-weight: bold; font-size: 16px; }
+        .total-percentage.error { color: var(--danger-color); }
+        .actions-container { display: flex; gap: 10px; margin-top: 20px; }
+        .actions-container .btn { flex: 1; }
+        .student-record-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; }
+        .delete-record-btn { position: absolute; top: 15px; right: 15px; width: 30px; height: 30px; border-radius: 50%; border: none; background-color: var(--danger-color); color: white; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; line-height: 1; }
+        .student-record-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--light-gray); text-align: left; }
+        .student-record-header .timestamp { font-size: 12px; font-weight: normal; color: var(--dark-gray); display: block; margin-top: 4px; }
+        .admin-charts-wrapper { display: flex; gap: 20px; }
+        .admin-chart-block { width: 50%; text-align: center; }
+        .role-details-list { list-style: none; padding: 0; margin-top: 15px; text-align: left; font-size: 14px; }
+        .role-details-list li { display: flex; align-items: center; margin-bottom: 5px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>🎯 岗位匹配度分析</h2>
-    <p class="desc">上传 Harrison 测评报告，AI 将自动分析其与岗位的匹配程度。</p>
+    <div class="container">
+        <!-- 欢迎页面 -->
+        <div id="welcome-page">
+            <div id="app-header" style="visibility: hidden;">生命角色饼图</div>
+            <div class="card">
+                <h1>欢迎来到生命角色规划工具</h1>
+                <p class="description">请输入姓名和密码开始规划</p>
+                <input type="text" id="name-input" class="input-field" placeholder="请输入您的姓名">
+                <!-- *** 修改点在这里：去掉了placeholder中的密码提示 *** -->
+                <input type="password" id="student-password-input" class="input-field" placeholder="请输入密码">
+                <button id="start-btn" class="btn btn-full btn-primary">开始规划</button>
+                <button id="admin-login-btn" class="btn btn-full btn-secondary">规划师入口</button>
+            </div>
+        </div>
 
-    <!-- 这里需要输入 API Key，因为 GitHub 是公开的，为了安全，让用户自己填 Key -->
-    <div class="form-group">
-        <label>千问 API Key (阿里云 DashScope)</label>
-        <input type="password" id="apiKey" placeholder="sk-xxxxxxxxxxxxxxxx">
-        <div class="api-hint">为了调用 AI 能力，需要填入您的 API Key（仅保存在本地）</div>
+        <!-- 主应用页面 -->
+        <div id="main-app" class="hidden">
+            <div id="app-header">生命角色饼图</div>
+            <div class="card">
+                <div class="charts-wrapper">
+                    <div class="chart-container"><h3>当下</h3><canvas id="present-pie-chart"></canvas></div>
+                    <div class="chart-container"><h3>2031年</h3><canvas id="future-pie-chart"></canvas></div>
+                </div>
+            </div>
+            <div class="card role-management-section">
+                <div class="toggle-buttons">
+                    <button id="toggle-present" class="active">当下</button>
+                    <button id="toggle-future">2031年</button>
+                </div>
+                <div class="role-manager-header"><h2>角色管理</h2><button id="add-role-btn" class="add-btn">+</button></div>
+                <div id="roles-list"></div>
+                <div id="total-percentage" class="total-percentage"></div>
+                <div class="actions-container">
+                    <button id="exit-btn" class="btn btn-danger hidden">退出</button>
+                    <button id="reset-btn" class="btn" style="background-color: #aaa; color: white;">重置</button>
+                    <button id="save-btn" class="btn btn-primary">保存数据</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 管理员后台页面 -->
+        <div id="admin-page" class="hidden">
+            <div id="app-header">规划师后台</div>
+            <div id="admin-data-container"></div>
+            <button onclick="showWelcomePage()" class="btn btn-full btn-primary" style="margin-top: 10px;">返回首页</button>
+            <button id="clear-data-btn" class="btn btn-full btn-danger" style="margin-top: 10px;">清空所有学员数据</button>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label>应聘岗位</label>
-        <input type="text" id="jobTitle" placeholder="例如：大客户经理">
-    </div>
+    <script>
+        const DB_KEY = 'lifePieSubmissions_v4';
+        const page = { welcome: document.getElementById('welcome-page'), app: document.getElementById('main-app'), admin: document.getElementById('admin-page'), };
+        const input = { name: document.getElementById('name-input'), password: document.getElementById('student-password-input'), };
+        const btn = { start: document.getElementById('start-btn'), adminLogin: document.getElementById('admin-login-btn'), clearData: document.getElementById('clear-data-btn'), togglePresent: document.getElementById('toggle-present'), toggleFuture: document.getElementById('toggle-future'), reset: document.getElementById('reset-btn'), save: document.getElementById('save-btn'), exit: document.getElementById('exit-btn'), addRole: document.getElementById('add-role-btn'), };
 
-    <div class="form-group">
-        <label>测评报告 (PDF)</label>
-        <input type="file" id="pdfFile" accept="application/pdf">
-    </div>
+        let presentPieChart, futurePieChart;
+        const getInitialState = () => ({ userName: '', activeView: 'present', present: { roles: [ { name: '员工', value: 40, color: '#ff6384' }, { name: '配偶', value: 20, color: '#36a2eb' }, { name: '子女', value: 15, color: '#4bc0c0' }, { name: '自我', value: 15, color: '#9966ff' }, { name: '朋友', value: 10, color: '#ffcd56' } ] }, future: { roles: [ { name: '员工', value: 25, color: '#ff6384' }, { name: '配偶', value: 25, color: '#36a2eb' }, { name: '子女', value: 10, color: '#4bc0c0' }, { name: '自我', value: 30, color: '#9966ff' }, { name: '朋友', value: 10, color: '#ffcd56' } ] }, timestamp: null });
+        let state = getInitialState();
+        const defaultColors = ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'];
+        
+        function createChart(canvasId, rolesData) { const ctx = document.getElementById(canvasId).getContext('2d'); return new Chart(ctx, { type: 'pie', data: { labels: rolesData.map(r => r.name), datasets: [{ data: rolesData.map(r => r.value), backgroundColor: rolesData.map(r => r.color), borderWidth: 2, borderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${context.raw}%` } } } } }); }
+        function renderAllForUser() { if (presentPieChart) presentPieChart.destroy(); if (futurePieChart) futurePieChart.destroy(); presentPieChart = createChart('present-pie-chart', state.present.roles); futurePieChart = createChart('future-pie-chart', state.future.roles); renderRoleManagement(); updateToggleButtons(); }
+        function renderRoleManagement() { const activeRoles = state[state.activeView].roles; const rolesList = document.getElementById('roles-list'); rolesList.innerHTML = ''; activeRoles.forEach((role, index) => { const roleItem = document.createElement('div'); roleItem.className = 'role-item'; roleItem.innerHTML = `<div class="role-color-dot" style="background-color: ${role.color};"></div><div class="role-name">${role.name}</div><div class="role-slider-container"><input type="range" min="0" max="100" value="${role.value}" class="role-slider" data-index="${index}"></div><div class="role-percentage">${role.value}%</div><button class="delete-btn" data-index="${index}">-</button>`; rolesList.appendChild(roleItem); }); updateTotal(); }
+        function updateTotal() { const total = state[state.activeView].roles.reduce((sum, role) => sum + role.value, 0); document.getElementById('total-percentage').textContent = `总计：${total}%`; document.getElementById('total-percentage').classList.toggle('error', total > 100); }
+        function updateToggleButtons() { btn.togglePresent.classList.toggle('active', state.activeView === 'present'); btn.toggleFuture.classList.toggle('active', state.activeView === 'future'); }
+        function formatTimestamp(isoString) { if (!isoString) return ''; const date = new Date(isoString); const pad = num => num.toString().padStart(2, '0'); return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`; }
+        function renderAdminPage() { const container = document.getElementById('admin-data-container'); container.innerHTML = ''; const allSubmissions = Object.values(JSON.parse(localStorage.getItem(DB_KEY) || '{}')).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); if (allSubmissions.length === 0) { container.innerHTML = '<p style="text-align:center; color:#888;">暂无学员提交数据</p>'; return; } allSubmissions.forEach((submission, index) => { const card = document.createElement('div'); card.className = 'student-record-card'; let presentDetailsHTML = submission.present.roles.map(r => `<li><div class="role-color-dot" style="background-color:${r.color};"></div> &nbsp; ${r.name}: ${r.value}%</li>`).join(''); let futureDetailsHTML = submission.future.roles.map(r => `<li><div class="role-color-dot" style="background-color:${r.color};"></div> &nbsp; ${r.name}: ${r.value}%</li>`).join(''); card.innerHTML = `<button class="delete-record-btn" data-username="${submission.userName}">×</button><div class="student-record-header">${submission.userName}<span class="timestamp">最后更新: ${formatTimestamp(submission.timestamp)}</span></div><div class="admin-charts-wrapper"><div class="admin-chart-block"><h3>当下</h3><canvas id="admin-present-chart-${index}"></canvas><ul class="role-details-list">${presentDetailsHTML}</ul></div><div class="admin-chart-block"><h3>2031年</h3><canvas id="admin-future-chart-${index}"></canvas><ul class="role-details-list">${futureDetailsHTML}</ul></div></div>`; container.appendChild(card); }); setTimeout(() => allSubmissions.forEach((s, i) => { createChart(`admin-present-chart-${i}`, s.present.roles); createChart(`admin-future-chart-${i}`, s.future.roles); }), 0); }
+        
+        btn.start.addEventListener('click', () => {
+            const name = input.name.value.trim(); const password = input.password.value;
+            if (!name) { alert('请输入您的姓名！'); return; }
+            if (password !== '2026') { alert('密码错误！'); return; }
+            state.userName = name;
+            page.welcome.classList.add('hidden'); page.app.classList.remove('hidden');
+            renderAllForUser();
+        });
 
-    <button id="submitBtn" onclick="startAnalysis()">开始分析</button>
-    
-    <div class="loading" id="loading">
-        <span class="spinner"></span>正在读取 PDF 并请求 AI 分析...
-    </div>
-
-    <div id="resultArea"></div>
-</div>
-
-<script>
-    // 配置千问 API 地址
-    const API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
-
-    async function startAnalysis() {
-        const apiKey = document.getElementById('apiKey').value.trim();
-        const jobTitle = document.getElementById('jobTitle').value.trim();
-        const fileInput = document.getElementById('pdfFile');
-        const btn = document.getElementById('submitBtn');
-        const loading = document.getElementById('loading');
-        const resultArea = document.getElementById('resultArea');
-
-        // 1. 基础校验
-        if (!apiKey) { alert('请输入 API Key'); return; }
-        if (!jobTitle) { alert('请输入岗位名称'); return; }
-        if (!fileInput.files[0]) { alert('请上传 PDF 文件'); return; }
-
-        const file = fileInput.files[0];
-
-        // 2. 界面状态更新
-        btn.disabled = true;
-        btn.innerText = "分析中...";
-        loading.style.display = 'block';
-        resultArea.style.display = 'none';
-        resultArea.innerText = '';
-
-        try {
-            // 3. 使用 PDF.js 读取文件内容
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            let fullText = "";
-
-            // 遍历所有页面提取文字
-            for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const textContent = await page.getTextContent();
-                const pageText = textContent.items.map(item => item.str).join(' ');
-                fullText += pageText + "\n";
+        btn.adminLogin.addEventListener('click', () => { const password = prompt("请输入规划师密码："); if (password === '0411') { page.welcome.classList.add('hidden'); page.admin.classList.remove('hidden'); renderAdminPage(); } else if (password !== null) { alert('密码错误！'); } });
+        btn.clearData.addEventListener('click', () => { if (confirm('您确定要清空所有已保存的学员数据吗？此操作不可撤销！')) { localStorage.removeItem(DB_KEY); renderAdminPage(); alert('所有学员数据已清空。'); } });
+        btn.togglePresent.addEventListener('click', () => { state.activeView = 'present'; renderAllForUser(); });
+        btn.toggleFuture.addEventListener('click', () => { state.activeView = 'future'; renderAllForUser(); });
+        btn.exit.addEventListener('click', showWelcomePage);
+        
+        btn.reset.addEventListener('click', () => {
+            if (confirm('您确定要重置所有角色和比例为初始状态吗？')) {
+                const currentName = state.userName;
+                state = getInitialState();
+                state.userName = currentName;
+                renderAllForUser();
+                btn.exit.classList.add('hidden');
             }
+        });
 
-            if (fullText.length < 50) {
-                alert("无法从 PDF 中提取足够的文字，请检查文件是否为扫描件/图片。");
-                resetBtn();
-                return;
-            }
+        btn.save.addEventListener('click', () => {
+            const totalPresent = state.present.roles.reduce((sum, r) => sum + r.value, 0); const totalFuture = state.future.roles.reduce((sum, r) => sum + r.value, 0);
+            if (totalPresent > 100 || totalFuture > 100) { alert('“当下”或“2031年”的总比例超过了100%，请调整后再保存！'); return; }
+            if ((totalPresent !== 100 || totalFuture !== 100) && !confirm(`饼图总比例不等于100%，您确定要这样保存吗？`)) return;
+            const allSubmissions = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+            state.timestamp = new Date().toISOString();
+            allSubmissions[state.userName] = state;
+            localStorage.setItem(DB_KEY, JSON.stringify(allSubmissions));
+            alert(`数据保存成功！`);
+            btn.exit.classList.remove('hidden');
+        });
 
-            // 4. 构建发给千问的提示词
-            const prompt = `
-            你是一位资深的人力资源专家。
-            应聘岗位：${jobTitle}
-            
-            以下是候选人的测评报告内容：
-            """
-            ${fullText.substring(0, 8000)} 
-            """
-            (注意：如果报告内容被截断，请基于已有信息分析)
-            
-            请根据岗位要求和报告内容，进行深度匹配分析。
-            输出格式要求：
-            1. **匹配度评分** (0-100分)
-            2. **核心优势** (列出3点)
-            3. **潜在风险/短板** (列出3点)
-            4. **面试建议** (针对该岗位，建议询问的2个关键问题)
-            `;
-
-            // 5. 调用千问 API
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: "qwen-plus", // 使用 qwen-plus 模型
-                    messages: [
-                        { role: "system", content: "你是一个专业的人才测评分析助手。" },
-                        { role: "user", content: prompt }
-                    ]
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.choices && data.choices.length > 0) {
-                const aiContent = data.choices[0].message.content;
-                // 将 Markdown 格式的换行转换为 HTML 换行
-                resultArea.innerHTML = aiContent.replace(/\n/g, '<br>');
-                resultArea.style.display = 'block';
-            } else {
-                alert('AI 分析失败：' + JSON.stringify(data));
-            }
-
-        } catch (error) {
-            console.error(error);
-            alert('发生错误：' + error.message);
-        } finally {
-            resetBtn();
+        btn.addRole.addEventListener('click', () => { const newRoleName = prompt("请输入新角色的名称：")?.trim(); if (!newRoleName) return; const activeRoles = state[state.activeView].roles; if (activeRoles.some(role => role.name === newRoleName)) { alert('该角色已存在！'); return; } activeRoles.push({ name: newRoleName, value: 0, color: defaultColors[activeRoles.length % defaultColors.length] }); renderAllForUser(); });
+        document.getElementById('roles-list').addEventListener('input', e => { if (e.target.classList.contains('role-slider')) { const index = e.target.dataset.index; const newValue = parseInt(e.target.value, 10); const activeRoles = state[state.activeView].roles; const oldValue = activeRoles[index].value; const totalWithoutCurrent = activeRoles.reduce((sum, role, i) => (i == index ? sum : sum + role.value), 0); if (totalWithoutCurrent + newValue > 100) { alert('总比例不能超过100%！'); e.target.value = oldValue; return; } activeRoles[index].value = newValue; e.target.closest('.role-item').querySelector('.role-percentage').textContent = `${newValue}%`; updateTotal(); renderUserCharts(); } });
+        document.getElementById('roles-list').addEventListener('click', e => { if (e.target.classList.contains('delete-btn')) { state[state.activeView].roles.splice(e.target.dataset.index, 1); renderAllForUser(); } });
+        document.getElementById('admin-data-container').addEventListener('click', e => { if (e.target.classList.contains('delete-record-btn')) { const userNameToDelete = e.target.dataset.username; if (confirm(`您确定要删除学员 "${userNameToDelete}" 的记录吗？`)) { const allSubmissions = JSON.parse(localStorage.getItem(DB_KEY) || '{}'); delete allSubmissions[userNameToDelete]; localStorage.setItem(DB_KEY, JSON.stringify(allSubmissions)); renderAdminPage(); } } });
+        
+        function showWelcomePage() {
+            state = getInitialState();
+            input.name.value = ''; input.password.value = '';
+            Object.values(page).forEach(p => p.classList.add('hidden'));
+            page.welcome.classList.remove('hidden');
+            btn.exit.classList.add('hidden');
         }
-    }
-
-    function resetBtn() {
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = false;
-        btn.innerText = "开始分析";
-        document.getElementById('loading').style.display = 'none';
-    }
-</script>
-
+    </script>
 </body>
 </html>
