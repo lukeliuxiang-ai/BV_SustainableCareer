@@ -3,174 +3,673 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生命角色规划工具</title>
+    <title>必维职业发展规划测评 | 霍兰德职业兴趣探索</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary-color: #5e54c7; --secondary-color: #28d8a3; --danger-color: #ff6b6b; --light-gray: #f0f0f0; --dark-gray: #888; --text-color: #333; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #747def, var(--primary-color)); color: var(--text-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .container { width: 100%; max-width: 450px; margin: auto; }
-        .card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); text-align: center; margin-bottom: 20px; }
-        h1, h2, h3 { font-weight: 600; margin-top: 0; }
-        h1 { font-size: 24px; } h2 { font-size: 18px; text-align: left; margin-bottom: 20px;} h3 { font-size: 16px; color: #555; margin-bottom: 10px; }
-        .description { color: var(--dark-gray); margin-bottom: 30px; }
-        .input-field { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; }
-        .btn { padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
-        .btn-full { width: 100%; }
-        .btn-primary { background-color: var(--secondary-color); color: white; }
-        .btn-primary:hover { background-color: #22b88a; }
-        .btn-secondary { background-color: transparent; color: var(--primary-color); font-weight: normal; margin-top: 20px; }
-        .btn-danger { background-color: var(--danger-color); color: white; }
-        #app-header { color: white; text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; }
-        .charts-wrapper { display: flex; gap: 10px; }
-        .chart-container { width: 50%; text-align: center; }
-        .toggle-buttons { display: flex; justify-content: center; margin-bottom: 20px; }
-        .toggle-buttons button { padding: 8px 20px; border: 1px solid #ccc; background-color: var(--light-gray); cursor: pointer; font-size: 14px; }
-        .toggle-buttons button:first-child { border-radius: 15px 0 0 15px; }
-        .toggle-buttons button:last-child { border-radius: 0 15px 15px 0; border-left: none;}
-        .toggle-buttons button.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .role-manager-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .add-btn { width: 36px; height: 36px; background-color: var(--secondary-color); color: white; border: none; border-radius: 50%; font-size: 24px; display: flex; justify-content: center; align-items: center; line-height: 1; cursor: pointer; }
-        .role-item { display: flex; align-items: center; margin-bottom: 15px; }
-        .role-color-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
-        .role-name { flex-grow: 1; text-align: left; font-weight: 500; }
-        .role-slider-container { flex-grow: 2; display: flex; align-items: center; }
-        .role-slider { width: 100%; margin: 0 10px; cursor: pointer; }
-        .role-percentage { min-width: 45px; text-align: right; font-weight: 500; }
-        .delete-btn { width: 24px; height: 24px; background-color: var(--danger-color); color: white; border: none; border-radius: 50%; font-size: 18px; cursor: pointer; margin-left: 15px; line-height: 1; }
-        .total-percentage { margin-top: 20px; font-weight: bold; font-size: 16px; }
-        .total-percentage.error { color: var(--danger-color); }
-        .actions-container { display: flex; gap: 10px; margin-top: 20px; }
-        .actions-container .btn { flex: 1; }
-        .student-record-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; }
-        .delete-record-btn { position: absolute; top: 15px; right: 15px; width: 30px; height: 30px; border-radius: 50%; border: none; background-color: var(--danger-color); color: white; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; line-height: 1; }
-        .student-record-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--light-gray); text-align: left; }
-        .student-record-header .timestamp { font-size: 12px; font-weight: normal; color: var(--dark-gray); display: block; margin-top: 4px; }
-        .admin-charts-wrapper { display: flex; gap: 20px; }
-        .admin-chart-block { width: 50%; text-align: center; }
-        .role-details-list { list-style: none; padding: 0; margin-top: 15px; text-align: left; font-size: 14px; }
-        .role-details-list li { display: flex; align-items: center; margin-bottom: 5px; }
-        .hidden { display: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a5f;
+            --secondary: #2c5282;
+            --accent: #d4af37;
+            --accent-light: #f4d03f;
+            --bv-blue: #0055a4;
+            --bv-light: #e6f0f8;
+            --bg-light: #f8fafc;
+            --text-dark: #1a202c;
+            --text-gray: #4a5568;
+            --white: #ffffff;
+            --ai-purple: #7c3aed;
+            --ai-light: #ede9fe;
+            --shadow: 0 10px 40px rgba(30, 58, 95, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e6f0f8 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* 倒计时锁定页面 */
+        .lock-screen {
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .lock-card {
+            background: var(--white);
+            border-radius: 32px;
+            padding: 50px 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .lock-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .lock-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .lock-message {
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .countdown-box {
+            background: linear-gradient(135deg, var(--bv-light), #fff);
+            border-radius: 24px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .countdown-timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--bv-blue);
+            font-family: monospace;
+            letter-spacing: 5px;
+            margin: 15px 0;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .reminder-note {
+            background: #fff8e6;
+            border-left: 4px solid var(--accent);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #8a6e2b;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--bv-blue);
+            color: var(--bv-blue);
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-outline:hover {
+            background: var(--bv-blue);
+            color: white;
+        }
+
+        /* 原有样式保留 */
+        .intro-section, .quiz-section, .result-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .quiz-section, .result-section {
+            display: none;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--bv-blue), var(--primary));
+            border-radius: 20px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: var(--accent);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            font-weight: 700;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        h1 { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+        .subtitle { color: var(--text-gray); margin-bottom: 30px; }
+
+        .context-banner {
+            background: linear-gradient(135deg, var(--bv-blue), var(--secondary));
+            color: white;
+            padding: 25px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .intro-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .input-group { margin: 20px 0; text-align: left; }
+        .input-group label { font-weight: 600; color: var(--primary); display: block; margin-bottom: 10px; }
+        .input-group input { width: 100%; padding: 14px 18px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; }
+        .input-group input:focus { outline: none; border-color: var(--bv-blue); }
+
+        .experience-options { display: flex; gap: 15px; flex-wrap: wrap; }
+        .experience-btn {
+            flex: 1; min-width: 180px; padding: 18px; background: var(--bg-light);
+            border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;
+            text-align: center; transition: all 0.3s;
+        }
+        .experience-btn:hover { border-color: var(--bv-blue); background: #fff; transform: translateY(-2px); }
+        .experience-btn.selected { background: linear-gradient(135deg, var(--bv-blue), var(--secondary)); color: white; border-color: var(--bv-blue); }
+        .exp-title { font-weight: 700; display: block; margin-bottom: 5px; }
+        .exp-desc { font-size: 0.8rem; opacity: 0.8; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--bv-blue), var(--secondary));
+            color: white; border: none; padding: 16px 50px; font-size: 1.1rem;
+            border-radius: 50px; cursor: pointer; font-weight: 600;
+            transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,85,164,0.3);
+        }
+        .btn-primary:disabled { background: #cbd5e0; cursor: not-allowed; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+
+        .question-card {
+            background: var(--white); border-radius: 24px; padding: 40px 30px;
+            box-shadow: var(--shadow); text-align: center;
+        }
+        .question-text { font-size: 1.3rem; margin-bottom: 30px; line-height: 1.6; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; max-width: 500px; margin: 0 auto; }
+        .option-btn {
+            background: var(--bg-light); border: 2px solid transparent; padding: 15px 20px;
+            border-radius: 12px; cursor: pointer; text-align: left; display: flex;
+            justify-content: space-between; align-items: center; transition: all 0.3s;
+        }
+        .option-btn:hover { background: #fff; border-color: var(--bv-blue); transform: translateX(5px); }
+        .option-btn.selected { background: linear-gradient(135deg, var(--bv-blue), var(--secondary)); color: white; }
+
+        .progress-container { background: var(--white); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--bv-blue), var(--accent)); width: 0%; transition: width 0.3s; }
+
+        .result-code { font-size: 3rem; font-weight: 800; letter-spacing: 5px; margin: 20px 0; }
+        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        .chart-container, .scores-container { background: var(--white); border-radius: 20px; padding: 20px; }
+        .score-item { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .score-letter { width: 40px; height: 40px; background: var(--bv-blue); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .score-bar-bg { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .score-bar-fill { height: 100%; background: linear-gradient(90deg, var(--bv-blue), var(--accent)); width: 0%; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) { .result-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
+<div class="container" id="app">
+    <!-- 动态内容由JS控制 -->
+</div>
 
-    <div class="container">
-        <!-- 欢迎页面 -->
-        <div id="welcome-page">
-            <div id="app-header" style="visibility: hidden;">生命角色饼图</div>
-            <div class="card">
-                <h1>欢迎来到生命角色规划工具</h1>
-                <p class="description">请输入姓名和密码开始规划</p>
-                <input type="text" id="name-input" class="input-field" placeholder="请输入您的姓名">
-                <!-- *** 修改点在这里：去掉了placeholder中的密码提示 *** -->
-                <input type="password" id="student-password-input" class="input-field" placeholder="请输入密码">
-                <button id="start-btn" class="btn btn-full btn-primary">开始规划</button>
-                <button id="admin-login-btn" class="btn btn-full btn-secondary">规划师入口</button>
-            </div>
-        </div>
+<script>
+    // ==================== 配置区 ====================
+// 解锁时间：2026年4月24日 13:15
+const UNLOCK_TIME = new Date(2026, 3, 24, 13, 15, 0); // 月份从0开始，3=4月
+const CLASS_TIME_STR = "4月24日 13:00";
+const UNLOCK_TIME_STR = "4月24日 13:15";
+    
+    // ==================== 霍兰德测评题库 ====================
+    const hollandCodes = {
+        R: { name: '实际型', strengths: ['技术实操', '问题解决', '流程优化'] },
+        I: { name: '研究型', strengths: ['数据分析', '创新研究', '系统思考'] },
+        A: { name: '艺术型', strengths: ['创意设计', '品牌塑造', '用户体验'] },
+        S: { name: '社会型', strengths: ['团队协作', '人才培养', '客户关系'] },
+        E: { name: '企业型', strengths: ['项目管理', '业务拓展', '变革推动'] },
+        C: { name: '常规型', strengths: ['质量控制', '合规管理', '运营效率'] }
+    };
 
-        <!-- 主应用页面 -->
-        <div id="main-app" class="hidden">
-            <div id="app-header">生命角色饼图</div>
-            <div class="card">
-                <div class="charts-wrapper">
-                    <div class="chart-container"><h3>当下</h3><canvas id="present-pie-chart"></canvas></div>
-                    <div class="chart-container"><h3>2031年</h3><canvas id="future-pie-chart"></canvas></div>
+    const options = [
+        { text: '完全不像我', score: 1 },
+        { text: '不太像我', score: 2 },
+        { text: '一般', score: 3 },
+        { text: '比较像我', score: 4 },
+        { text: '非常像我', score: 5 }
+    ];
+
+    const questions = [
+        { code: 'R', text: '使用工具进行实际操作，比如修理设备或优化工作流程' },
+        { code: 'R', text: '在现场解决具体的技术问题' },
+        { code: 'R', text: '对机械设备和检测工具的工作原理感兴趣' },
+        { code: 'R', text: '动手制作原型或测试样品' },
+        { code: 'R', text: '执行具体明确的任务，而不是抽象规划' },
+        { code: 'R', text: '在实验室或现场环境中工作' },
+        { code: 'R', text: '使用各种专业设备和软件工具' },
+        { code: 'R', text: '解决实际的技术难题' },
+        { code: 'R', text: '改进工艺和提升效率' },
+        { code: 'R', text: '看到工作的具体成果，比如完成检测或修复设备' },
+        { code: 'I', text: '研究新的检测技术和行业标准' },
+        { code: 'I', text: '阅读技术文献和学术报告' },
+        { code: 'I', text: '进行实验和数据分析来验证假设' },
+        { code: 'I', text: '对复杂系统的逻辑和原理感兴趣' },
+        { code: 'I', text: '独立思考和解决复杂技术问题' },
+        { code: 'I', text: '对新技术的应用和数字化转型感兴趣' },
+        { code: 'I', text: '分析业务数据并发现改进机会' },
+        { code: 'I', text: '探索新的方法论和最佳实践' },
+        { code: 'I', text: '用科学方法解决业务问题' },
+        { code: 'I', text: '在安静的环境中专注于深度研究' },
+        { code: 'A', text: '设计美观的报告展示和可视化方案' },
+        { code: 'A', text: '撰写有创意的技术文档或培训材料' },
+        { code: 'A', text: '用创新的方式呈现复杂的检测数据' },
+        { code: 'A', text: '在工作中体现原创性和独特视角' },
+        { code: 'A', text: '设计更好的客户体验流程' },
+        { code: 'A', text: '具有丰富的想象力和创新思维' },
+        { code: 'A', text: '用非传统、灵活的方法解决问题' },
+        { code: 'A', text: '对品牌建设和视觉传达保持敏感' },
+        { code: 'A', text: '通过创意方式提升服务质量' },
+        { code: 'A', text: '工作方式灵活，不受僵化流程的束缚' },
+        { code: 'S', text: '培训指导团队成员，帮助他们成长' },
+        { code: 'S', text: '与客户深入交流并理解他们的需求' },
+        { code: 'S', text: '理解同事和客户的感受与期望' },
+        { code: 'S', text: '教导新人掌握专业技能' },
+        { code: 'S', text: '对团队协作和人际沟通感兴趣' },
+        { code: 'S', text: '参与跨部门合作项目' },
+        { code: 'S', text: '调解冲突并促进团队合作' },
+        { code: 'S', text: '支持他人并帮助他们成功' },
+        { code: 'S', text: '建立良好的人际关系和信任' },
+        { code: 'S', text: '在团队中扮演协调者的角色' },
+        { code: 'E', text: '推动业务拓展和新客户开发' },
+        { code: 'E', text: '领导项目并推动变革落地' },
+        { code: 'E', text: '说服客户接受我们的解决方案' },
+        { code: 'E', text: '对业务战略和市场机会感兴趣' },
+        { code: 'E', text: '参与竞争并追求业务目标' },
+        { code: 'E', text: '组织和协调跨部门资源' },
+        { code: 'E', text: '参与公司战略规划和决策' },
+        { code: 'E', text: '具备商业敏感度并愿意承担风险' },
+        { code: 'E', text: '制定目标并带领团队实现' },
+        { code: 'E', text: '重视业务成果和职业成就' },
+        { code: 'C', text: '确保工作流程的标准化和规范化' },
+        { code: 'C', text: '处理数据并保证其准确无误' },
+        { code: 'C', text: '熟练使用办公软件和管理系统' },
+        { code: 'C', text: '遵循既定的质量标准和程序' },
+        { code: 'C', text: '对合规管理和风险控制感兴趣' },
+        { code: 'C', text: '有条理地组织文档和信息' },
+        { code: 'C', text: '注重细节，在报告中很少出错' },
+        { code: 'C', text: '在稳定、可预测的环境中工作' },
+        { code: 'C', text: '处理财务数据和预算管理' },
+        { code: 'C', text: '完成有明确标准的工作任务' }
+    ];
+
+    // 简化版建议库（一个代码3条示例）
+    const juniorStrategies = {
+        R: [{ title: '成为AI辅助的技术专家', content: '利用AI工具加速技术问题解决', action: '学习使用ChatGPT辅助技术诊断', isAI: true }],
+        I: [{ title: '利用AI加速研究', content: '用AI进行文献综述和数据分析', action: '使用Elicit辅助文献检索', isAI: true }],
+        A: [{ title: '客户体验美化师', content: '将审美融入客户服务触点', action: '重新设计3份报告模板', isAI: false }],
+        S: [{ title: '个性化培训', content: '用AI为学员定制学习路径', action: '分析学员能力差距生成计划', isAI: true }],
+        E: [{ title: 'AI自动化项目管理', content: '用AI工具自动化进度跟踪', action: '使用Notion AI管理项目', isAI: true }],
+        C: [{ title: '智能质量监控', content: '用AI实现数据实时预警', action: '建立质量监控仪表盘', isAI: true }]
+    };
+    const seniorStrategies = juniorStrategies; // 简化版
+
+    // ==================== 工具函数 ====================
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    // 保存测评数据到localStorage
+    function saveQuizData(data) {
+        localStorage.setItem('bv_quiz_completed', 'true');
+        localStorage.setItem('bv_quiz_data', JSON.stringify(data));
+    }
+
+    // 读取测评数据
+    function loadQuizData() {
+        const completed = localStorage.getItem('bv_quiz_completed');
+        const data = localStorage.getItem('bv_quiz_data');
+        if (completed === 'true' && data) {
+            return JSON.parse(data);
+        }
+        return null;
+    }
+
+    // 清除数据（重新测评时使用）
+    function clearQuizData() {
+        localStorage.removeItem('bv_quiz_completed');
+        localStorage.removeItem('bv_quiz_data');
+    }
+
+    // 检查是否已解锁
+    function isUnlocked() {
+        return new Date() >= UNLOCK_TIME;
+    }
+
+    // 格式化倒计时
+    function getTimeRemaining() {
+        const now = new Date();
+        const diff = UNLOCK_TIME - now;
+        if (diff <= 0) return null;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (86400000)) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        return { days, hours, minutes, seconds, total: diff };
+    }
+
+    // 渲染倒计时锁定页面
+    function renderLockScreen() {
+        const app = document.getElementById('app');
+        app.innerHTML = `
+            <div class="lock-screen">
+                <div class="lock-card">
+                    <div class="lock-icon">🔒</div>
+                    <h2 class="lock-title">测评已完成，结果即将揭晓</h2>
+                    <div class="lock-message">
+                        <p>感谢您完成了霍兰德职业兴趣测评！</p>
+                        <p>我们将在课堂上统一解读结果，届时点击链接即可查看您的专属报告。</p>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="countdown-label">距离结果揭晓还有</div>
+                        <div class="countdown-timer" id="countdownTimer">--:--:--:--</div>
+                        <div class="countdown-label">预计 ${UNLOCK_TIME_STR} 后可查看</div>
+                    </div>
+                    <div class="reminder-note">
+                        📅 上课时间：${CLASS_TIME_STR}<br>
+                        💡 届时我会用15分钟讲解霍兰德代码的含义，然后我们一起看大家的结果。<br>
+                        ⏰ 倒计时结束后刷新本页面，即可看到您的报告。
+                    </div>
+                    <button class="btn-outline" onclick="location.reload()">刷新检查</button>
                 </div>
             </div>
-            <div class="card role-management-section">
-                <div class="toggle-buttons">
-                    <button id="toggle-present" class="active">当下</button>
-                    <button id="toggle-future">2031年</button>
+        `;
+        
+        // 倒计时更新
+        const timerInterval = setInterval(() => {
+            if (isUnlocked()) {
+                clearInterval(timerInterval);
+                initApp();
+            } else {
+                const remaining = getTimeRemaining();
+                if (remaining) {
+                    const timerEl = document.getElementById('countdownTimer');
+                    if (timerEl) {
+                        timerEl.textContent = `${remaining.days}天 ${remaining.hours}时 ${remaining.minutes}分 ${remaining.seconds}秒`;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    // 渲染结果页
+    function renderResult(data) {
+        const { userPosition, userExperience, scores, topCode, secondCode, thirdCode } = data;
+        const percentages = {};
+        for (let code in scores) {
+            percentages[code] = Math.round((scores[code] / 50) * 100);
+        }
+        
+        const strategies = userExperience === 'junior' ? juniorStrategies : seniorStrategies;
+        const rec = strategies[topCode] ? strategies[topCode][0] : { title: '发挥您的优势', content: '将您的核心特质应用在工作中', action: '持续精进' };
+        
+        const app = document.getElementById('app');
+        app.innerHTML = `
+            <div class="result-section" style="display:block">
+                <div class="logo">BV</div>
+                <div style="text-align:center">
+                    <div class="experience-display" style="background:var(--accent-light); display:inline-block; padding:8px 25px; border-radius:30px; margin-bottom:15px">
+                        ${userExperience === 'junior' ? '从业10年以下' : '从业10年及以上'}
+                    </div>
+                    <div style="background:var(--bv-light); display:inline-block; padding:8px 25px; border-radius:30px; margin-bottom:15px; margin-left:10px">
+                        岗位：${userPosition}
+                    </div>
+                    <h2 class="result-title">您的霍兰德职业兴趣代码是</h2>
+                    <div class="result-code">${topCode}${secondCode}${thirdCode}</div>
+                    <p>${hollandCodes[topCode].name} + ${hollandCodes[secondCode].name} + ${hollandCodes[thirdCode].name}</p>
                 </div>
-                <div class="role-manager-header"><h2>角色管理</h2><button id="add-role-btn" class="add-btn">+</button></div>
-                <div id="roles-list"></div>
-                <div id="total-percentage" class="total-percentage"></div>
-                <div class="actions-container">
-                    <button id="exit-btn" class="btn btn-danger hidden">退出</button>
-                    <button id="reset-btn" class="btn" style="background-color: #aaa; color: white;">重置</button>
-                    <button id="save-btn" class="btn btn-primary">保存数据</button>
+
+                <div class="result-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">兴趣分布雷达图</div>
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <div class="scores-container">
+                        <div class="chart-title">各维度得分</div>
+                        ${Object.keys(percentages).map(code => `
+                            <div class="score-item">
+                                <div class="score-letter">${code}</div>
+                                <div class="score-bar-bg"><div class="score-bar-fill" style="width: ${percentages[code]}%"></div></div>
+                                <div>${percentages[code]}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div style="background:var(--white); border-radius:24px; padding:30px; margin-top:20px">
+                    <h3 style="color:var(--primary); margin-bottom:20px">🎯 影响力建设建议</h3>
+                    <div class="recommendation-card" style="background:var(--bv-light); padding:20px; border-radius:16px">
+                        <div class="rec-title">${rec.title}</div>
+                        <div class="rec-content">${rec.content}</div>
+                        <div class="rec-action" style="margin-top:12px">💡 具体行动：${rec.action}</div>
+                    </div>
+                    <p style="margin-top:20px; color:var(--text-gray); font-size:0.9rem">
+                        💬 课堂上我们会详细解读您的霍兰德代码含义，以及如何结合岗位发挥优势。
+                    </p>
+                </div>
+
+                <div class="btn-group" style="text-align:center; margin-top:30px">
+                    <button class="btn-outline" onclick="clearAndRestart()">重新测评</button>
+                    <button class="btn-primary" onclick="window.print()">保存报告</button>
                 </div>
             </div>
-        </div>
+        `;
         
-        <!-- 管理员后台页面 -->
-        <div id="admin-page" class="hidden">
-            <div id="app-header">规划师后台</div>
-            <div id="admin-data-container"></div>
-            <button onclick="showWelcomePage()" class="btn btn-full btn-primary" style="margin-top: 10px;">返回首页</button>
-            <button id="clear-data-btn" class="btn btn-full btn-danger" style="margin-top: 10px;">清空所有学员数据</button>
-        </div>
-    </div>
-
-    <script>
-        const DB_KEY = 'lifePieSubmissions_v4';
-        const page = { welcome: document.getElementById('welcome-page'), app: document.getElementById('main-app'), admin: document.getElementById('admin-page'), };
-        const input = { name: document.getElementById('name-input'), password: document.getElementById('student-password-input'), };
-        const btn = { start: document.getElementById('start-btn'), adminLogin: document.getElementById('admin-login-btn'), clearData: document.getElementById('clear-data-btn'), togglePresent: document.getElementById('toggle-present'), toggleFuture: document.getElementById('toggle-future'), reset: document.getElementById('reset-btn'), save: document.getElementById('save-btn'), exit: document.getElementById('exit-btn'), addRole: document.getElementById('add-role-btn'), };
-
-        let presentPieChart, futurePieChart;
-        const getInitialState = () => ({ userName: '', activeView: 'present', present: { roles: [ { name: '员工', value: 40, color: '#ff6384' }, { name: '配偶', value: 20, color: '#36a2eb' }, { name: '子女', value: 15, color: '#4bc0c0' }, { name: '自我', value: 15, color: '#9966ff' }, { name: '朋友', value: 10, color: '#ffcd56' } ] }, future: { roles: [ { name: '员工', value: 25, color: '#ff6384' }, { name: '配偶', value: 25, color: '#36a2eb' }, { name: '子女', value: 10, color: '#4bc0c0' }, { name: '自我', value: 30, color: '#9966ff' }, { name: '朋友', value: 10, color: '#ffcd56' } ] }, timestamp: null });
-        let state = getInitialState();
-        const defaultColors = ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'];
-        
-        function createChart(canvasId, rolesData) { const ctx = document.getElementById(canvasId).getContext('2d'); return new Chart(ctx, { type: 'pie', data: { labels: rolesData.map(r => r.name), datasets: [{ data: rolesData.map(r => r.value), backgroundColor: rolesData.map(r => r.color), borderWidth: 2, borderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.label}: ${context.raw}%` } } } } }); }
-        function renderAllForUser() { if (presentPieChart) presentPieChart.destroy(); if (futurePieChart) futurePieChart.destroy(); presentPieChart = createChart('present-pie-chart', state.present.roles); futurePieChart = createChart('future-pie-chart', state.future.roles); renderRoleManagement(); updateToggleButtons(); }
-        function renderRoleManagement() { const activeRoles = state[state.activeView].roles; const rolesList = document.getElementById('roles-list'); rolesList.innerHTML = ''; activeRoles.forEach((role, index) => { const roleItem = document.createElement('div'); roleItem.className = 'role-item'; roleItem.innerHTML = `<div class="role-color-dot" style="background-color: ${role.color};"></div><div class="role-name">${role.name}</div><div class="role-slider-container"><input type="range" min="0" max="100" value="${role.value}" class="role-slider" data-index="${index}"></div><div class="role-percentage">${role.value}%</div><button class="delete-btn" data-index="${index}">-</button>`; rolesList.appendChild(roleItem); }); updateTotal(); }
-        function updateTotal() { const total = state[state.activeView].roles.reduce((sum, role) => sum + role.value, 0); document.getElementById('total-percentage').textContent = `总计：${total}%`; document.getElementById('total-percentage').classList.toggle('error', total > 100); }
-        function updateToggleButtons() { btn.togglePresent.classList.toggle('active', state.activeView === 'present'); btn.toggleFuture.classList.toggle('active', state.activeView === 'future'); }
-        function formatTimestamp(isoString) { if (!isoString) return ''; const date = new Date(isoString); const pad = num => num.toString().padStart(2, '0'); return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`; }
-        function renderAdminPage() { const container = document.getElementById('admin-data-container'); container.innerHTML = ''; const allSubmissions = Object.values(JSON.parse(localStorage.getItem(DB_KEY) || '{}')).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); if (allSubmissions.length === 0) { container.innerHTML = '<p style="text-align:center; color:#888;">暂无学员提交数据</p>'; return; } allSubmissions.forEach((submission, index) => { const card = document.createElement('div'); card.className = 'student-record-card'; let presentDetailsHTML = submission.present.roles.map(r => `<li><div class="role-color-dot" style="background-color:${r.color};"></div> &nbsp; ${r.name}: ${r.value}%</li>`).join(''); let futureDetailsHTML = submission.future.roles.map(r => `<li><div class="role-color-dot" style="background-color:${r.color};"></div> &nbsp; ${r.name}: ${r.value}%</li>`).join(''); card.innerHTML = `<button class="delete-record-btn" data-username="${submission.userName}">×</button><div class="student-record-header">${submission.userName}<span class="timestamp">最后更新: ${formatTimestamp(submission.timestamp)}</span></div><div class="admin-charts-wrapper"><div class="admin-chart-block"><h3>当下</h3><canvas id="admin-present-chart-${index}"></canvas><ul class="role-details-list">${presentDetailsHTML}</ul></div><div class="admin-chart-block"><h3>2031年</h3><canvas id="admin-future-chart-${index}"></canvas><ul class="role-details-list">${futureDetailsHTML}</ul></div></div>`; container.appendChild(card); }); setTimeout(() => allSubmissions.forEach((s, i) => { createChart(`admin-present-chart-${i}`, s.present.roles); createChart(`admin-future-chart-${i}`, s.future.roles); }), 0); }
-        
-        btn.start.addEventListener('click', () => {
-            const name = input.name.value.trim(); const password = input.password.value;
-            if (!name) { alert('请输入您的姓名！'); return; }
-            if (password !== '2026') { alert('密码错误！'); return; }
-            state.userName = name;
-            page.welcome.classList.add('hidden'); page.app.classList.remove('hidden');
-            renderAllForUser();
+        // 绘制雷达图
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['R实际', 'I研究', 'A艺术', 'S社会', 'E企业', 'C常规'],
+                datasets: [{
+                    data: [percentages.R, percentages.I, percentages.A, percentages.S, percentages.E, percentages.C],
+                    backgroundColor: 'rgba(0,85,164,0.2)',
+                    borderColor: '#0055a4',
+                    pointBackgroundColor: '#d4af37',
+                    borderWidth: 2
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: true, scales: { r: { beginAtZero: true, max: 100 } } }
         });
+    }
 
-        btn.adminLogin.addEventListener('click', () => { const password = prompt("请输入规划师密码："); if (password === '0411') { page.welcome.classList.add('hidden'); page.admin.classList.remove('hidden'); renderAdminPage(); } else if (password !== null) { alert('密码错误！'); } });
-        btn.clearData.addEventListener('click', () => { if (confirm('您确定要清空所有已保存的学员数据吗？此操作不可撤销！')) { localStorage.removeItem(DB_KEY); renderAdminPage(); alert('所有学员数据已清空。'); } });
-        btn.togglePresent.addEventListener('click', () => { state.activeView = 'present'; renderAllForUser(); });
-        btn.toggleFuture.addEventListener('click', () => { state.activeView = 'future'; renderAllForUser(); });
-        btn.exit.addEventListener('click', showWelcomePage);
+    // 渲染首页（测评入口）
+    function renderIntro() {
+        const app = document.getElementById('app');
+        app.innerHTML = `
+            <div class="intro-section">
+                <div class="logo">BV</div>
+                <h1>必维职业发展规划测评</h1>
+                <p class="subtitle">探索您的霍兰德职业兴趣代码</p>
+                
+                <div class="context-banner">
+                    <h3>🎯 课前说明</h3>
+                    <p>完成测评后，结果将在<span style="color:var(--accent-light)">${UNLOCK_TIME_STR}</span>自动解锁。届时我们会用15分钟讲解霍兰德代码的含义，然后一起解读大家的结果。</p>
+                    <p style="margin-top:10px">💡 请如实作答，答案无对错之分。</p>
+                </div>
+                
+                <div class="intro-card">
+                    <div class="input-group">
+                        <label>请选择您的从业年限</label>
+                        <div class="experience-options">
+                            <div class="experience-btn" data-exp="junior">
+                                <span class="exp-title">10年以下</span>
+                                <span class="exp-desc">重点提升专业能力</span>
+                            </div>
+                            <div class="experience-btn" data-exp="senior">
+                                <span class="exp-title">10年及以上</span>
+                                <span class="exp-desc">扩展行业影响力</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>请输入您当前的岗位名称</label>
+                        <input type="text" id="positionInput" placeholder="例如：质量工程师、项目经理...">
+                    </div>
+                </div>
+                <button class="btn-primary" id="startQuizBtn" disabled>开始测评</button>
+            </div>
+        `;
         
-        btn.reset.addEventListener('click', () => {
-            if (confirm('您确定要重置所有角色和比例为初始状态吗？')) {
-                const currentName = state.userName;
-                state = getInitialState();
-                state.userName = currentName;
-                renderAllForUser();
-                btn.exit.classList.add('hidden');
+        let selectedExp = null;
+        document.querySelectorAll('.experience-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.experience-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedExp = btn.dataset.exp;
+                checkStart();
+            });
+        });
+        const positionInput = document.getElementById('positionInput');
+        const startBtn = document.getElementById('startQuizBtn');
+        function checkStart() {
+            startBtn.disabled = !(selectedExp && positionInput.value.trim());
+        }
+        positionInput.addEventListener('input', checkStart);
+        startBtn.addEventListener('click', () => {
+            if (selectedExp && positionInput.value.trim()) {
+                startQuiz(selectedExp, positionInput.value.trim());
             }
         });
+    }
 
-        btn.save.addEventListener('click', () => {
-            const totalPresent = state.present.roles.reduce((sum, r) => sum + r.value, 0); const totalFuture = state.future.roles.reduce((sum, r) => sum + r.value, 0);
-            if (totalPresent > 100 || totalFuture > 100) { alert('“当下”或“2031年”的总比例超过了100%，请调整后再保存！'); return; }
-            if ((totalPresent !== 100 || totalFuture !== 100) && !confirm(`饼图总比例不等于100%，您确定要这样保存吗？`)) return;
-            const allSubmissions = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
-            state.timestamp = new Date().toISOString();
-            allSubmissions[state.userName] = state;
-            localStorage.setItem(DB_KEY, JSON.stringify(allSubmissions));
-            alert(`数据保存成功！`);
-            btn.exit.classList.remove('hidden');
-        });
-
-        btn.addRole.addEventListener('click', () => { const newRoleName = prompt("请输入新角色的名称：")?.trim(); if (!newRoleName) return; const activeRoles = state[state.activeView].roles; if (activeRoles.some(role => role.name === newRoleName)) { alert('该角色已存在！'); return; } activeRoles.push({ name: newRoleName, value: 0, color: defaultColors[activeRoles.length % defaultColors.length] }); renderAllForUser(); });
-        document.getElementById('roles-list').addEventListener('input', e => { if (e.target.classList.contains('role-slider')) { const index = e.target.dataset.index; const newValue = parseInt(e.target.value, 10); const activeRoles = state[state.activeView].roles; const oldValue = activeRoles[index].value; const totalWithoutCurrent = activeRoles.reduce((sum, role, i) => (i == index ? sum : sum + role.value), 0); if (totalWithoutCurrent + newValue > 100) { alert('总比例不能超过100%！'); e.target.value = oldValue; return; } activeRoles[index].value = newValue; e.target.closest('.role-item').querySelector('.role-percentage').textContent = `${newValue}%`; updateTotal(); renderUserCharts(); } });
-        document.getElementById('roles-list').addEventListener('click', e => { if (e.target.classList.contains('delete-btn')) { state[state.activeView].roles.splice(e.target.dataset.index, 1); renderAllForUser(); } });
-        document.getElementById('admin-data-container').addEventListener('click', e => { if (e.target.classList.contains('delete-record-btn')) { const userNameToDelete = e.target.dataset.username; if (confirm(`您确定要删除学员 "${userNameToDelete}" 的记录吗？`)) { const allSubmissions = JSON.parse(localStorage.getItem(DB_KEY) || '{}'); delete allSubmissions[userNameToDelete]; localStorage.setItem(DB_KEY, JSON.stringify(allSubmissions)); renderAdminPage(); } } });
-        
-        function showWelcomePage() {
-            state = getInitialState();
-            input.name.value = ''; input.password.value = '';
-            Object.values(page).forEach(p => p.classList.add('hidden'));
-            page.welcome.classList.remove('hidden');
-            btn.exit.classList.add('hidden');
+    // 开始测评（存储用户信息后进入答题）
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let quizScores = { R:0, I:0, A:0, S:0, E:0, C:0 };
+    let quizUserExp = '';
+    let quizUserPos = '';
+    
+    function startQuiz(exp, pos) {
+        quizUserExp = exp;
+        quizUserPos = pos;
+        currentQuestions = shuffleArray([...questions]);
+        currentIndex = 0;
+        quizScores = { R:0, I:0, A:0, S:0, E:0, C:0 };
+        renderQuizQuestion();
+    }
+    
+    function renderQuizQuestion() {
+        const app = document.getElementById('app');
+        if (currentIndex >= currentQuestions.length) {
+            // 完成测评，计算结果并存储
+            const scores = quizScores;
+            const sorted = Object.keys(scores).sort((a,b) => scores[b]-scores[a]);
+            const resultData = {
+                userPosition: quizUserPos,
+                userExperience: quizUserExp,
+                scores: scores,
+                topCode: sorted[0],
+                secondCode: sorted[1],
+                thirdCode: sorted[2],
+                completedAt: new Date().toISOString()
+            };
+            saveQuizData(resultData);
+            // 重新根据当前时间判断显示锁屏还是结果
+            initApp();
+            return;
         }
-    </script>
+        
+        const q = currentQuestions[currentIndex];
+        const progress = ((currentIndex + 1) / currentQuestions.length) * 100;
+        app.innerHTML = `
+            <div class="quiz-section" style="display:block">
+                <div class="progress-container">
+                    <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+                    <div style="text-align:center; margin-top:10px">${currentIndex+1} / ${currentQuestions.length}</div>
+                </div>
+                <div class="question-card">
+                    <div class="question-text">${q.text}</div>
+                    <div class="options-container" id="optionsContainer"></div>
+                </div>
+            </div>
+        `;
+        const optsContainer = document.getElementById('optionsContainer');
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `${opt.text}<span style="opacity:0.6">${opt.score}分</span>`;
+            btn.onclick = () => {
+                quizScores[q.code] += opt.score;
+                currentIndex++;
+                renderQuizQuestion();
+            };
+            optsContainer.appendChild(btn);
+        });
+    }
+    
+    function clearAndRestart() {
+        clearQuizData();
+        initApp();
+    }
+    
+    // 主入口：判断状态并渲染相应界面
+    function initApp() {
+        const completedData = loadQuizData();
+        if (!completedData) {
+            renderIntro();
+        } else {
+            if (isUnlocked()) {
+                renderResult(completedData);
+            } else {
+                renderLockScreen();
+            }
+        }
+    }
+    
+    // 暴露全局函数
+    window.clearAndRestart = clearAndRestart;
+    
+    initApp();
+</script>
 </body>
 </html>
