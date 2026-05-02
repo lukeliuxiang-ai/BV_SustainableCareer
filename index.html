@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>必维职业发展规划测评 | 霍兰德职业兴趣探索</title>
+    <title>必维职业发展规划测评 | Bureau Veritas Career Development</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -26,6 +26,7 @@
             --ai-purple: #7c3aed;
             --ai-light: #ede9fe;
             --shadow: 0 10px 40px rgba(30, 58, 95, 0.1);
+            --shadow-hover: 0 20px 60px rgba(30, 58, 95, 0.15);
         }
 
         body {
@@ -33,6 +34,7 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #e6f0f8 100%);
             min-height: 100vh;
             color: var(--text-dark);
+            overflow-x: hidden;
         }
 
         .container {
@@ -125,7 +127,11 @@
         }
 
         /* 原有样式保留 */
-        .intro-section, .quiz-section, .result-section {
+        .intro-section {
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .quiz-section, .result-section {
             animation: fadeInUp 0.6s ease-out;
         }
 
@@ -166,8 +172,19 @@
             100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
-        h1 { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-        .subtitle { color: var(--text-gray); margin-bottom: 30px; }
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
 
         .context-banner {
             background: linear-gradient(135deg, var(--bv-blue), var(--secondary));
@@ -176,32 +193,184 @@
             border-radius: 16px;
             margin-bottom: 30px;
             text-align: left;
+            box-shadow: var(--shadow);
+        }
+        .context-banner h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .context-banner p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            opacity: 0.95;
+            margin-bottom: 10px;
         }
 
         .intro-card {
             background: var(--white);
             border-radius: 24px;
-            padding: 30px;
+            padding: 40px;
             box-shadow: var(--shadow);
             margin-bottom: 30px;
             text-align: left;
+            border: 1px solid rgba(30, 58, 95, 0.05);
+        }
+        .intro-card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .intro-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 15px;
         }
 
-        .input-group { margin: 20px 0; text-align: left; }
-        .input-group label { font-weight: 600; color: var(--primary); display: block; margin-bottom: 10px; }
-        .input-group input { width: 100%; padding: 14px 18px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; }
-        .input-group input:focus { outline: none; border-color: var(--bv-blue); }
+        .top-model {
+            background: var(--bv-light);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--bv-blue);
+        }
+        .top-model h4 {
+            color: var(--bv-blue);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .top-model ul {
+            margin-left: 20px;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+        .top-model li { margin-bottom: 8px; }
+
+        .ai-highlight {
+            background: linear-gradient(135deg, var(--ai-light), #fff);
+            border-left: 4px solid var(--ai-purple);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .ai-highlight h4 {
+            color: var(--ai-purple);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ai-highlight p {
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .influence-highlight {
+            background: linear-gradient(135deg, #e6f0f8, #fff);
+            border-left: 4px solid var(--bv-blue);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .influence-highlight h4 {
+            color: var(--bv-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .influence-highlight p {
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .vuca-note {
+            background: linear-gradient(135deg, #fff9e6, #fff);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .vuca-note h4 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .vuca-note p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .input-group { margin: 25px 0; text-align: left; }
+        .input-group label {
+            display: block;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .input-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--bv-blue);
+            box-shadow: 0 0 0 3px rgba(0, 85, 164, 0.1);
+        }
+        .input-hint {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-top: 8px;
+        }
 
         .experience-options { display: flex; gap: 15px; flex-wrap: wrap; }
         .experience-btn {
-            flex: 1; min-width: 180px; padding: 18px; background: var(--bg-light);
-            border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;
-            text-align: center; transition: all 0.3s;
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            background: var(--bg-light);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
         }
-        .experience-btn:hover { border-color: var(--bv-blue); background: #fff; transform: translateY(-2px); }
-        .experience-btn.selected { background: linear-gradient(135deg, var(--bv-blue), var(--secondary)); color: white; border-color: var(--bv-blue); }
-        .exp-title { font-weight: 700; display: block; margin-bottom: 5px; }
-        .exp-desc { font-size: 0.8rem; opacity: 0.8; }
+        .experience-btn:hover {
+            border-color: var(--bv-blue);
+            background: #fff;
+            transform: translateY(-2px);
+        }
+        .experience-btn.selected {
+            background: linear-gradient(135deg, var(--bv-blue), var(--secondary));
+            color: white;
+            border-color: var(--bv-blue);
+        }
+        .experience-btn .exp-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .experience-btn .exp-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--bv-blue), var(--secondary));
@@ -252,10 +421,10 @@
 
 <script>
     // ==================== 配置区 ====================
-// 解锁时间：2026年4月24日 13:15
-const UNLOCK_TIME = new Date(2026, 3, 24, 13, 15, 0); // 月份从0开始，3=4月
-const CLASS_TIME_STR = "4月24日 13:00";
-const UNLOCK_TIME_STR = "4月24日 13:15";
+// 测评报告解锁：2026年5月4日 09:00（本地时间）
+const UNLOCK_TIME = new Date(2026, 4, 4, 9, 0, 0); // 月份从0开始，4=5月
+const CLASS_TIME_STR = "5月4日（以培训通知为准）";
+const UNLOCK_TIME_STR = "5月4日 09:00";
     
     // ==================== 霍兰德测评题库 ====================
     const hollandCodes = {
@@ -415,9 +584,9 @@ const UNLOCK_TIME_STR = "4月24日 13:15";
                         <div class="countdown-label">预计 ${UNLOCK_TIME_STR} 后可查看</div>
                     </div>
                     <div class="reminder-note">
-                        📅 上课时间：${CLASS_TIME_STR}<br>
-                        💡 届时我会用15分钟讲解霍兰德代码的含义，然后我们一起看大家的结果。<br>
-                        ⏰ 倒计时结束后刷新本页面，即可看到您的报告。
+                        📅 课堂安排：${CLASS_TIME_STR}<br>
+                        💡 课堂上将讲解霍兰德代码含义，并一起解读测评结果。<br>
+                        ⏰ 到达 ${UNLOCK_TIME_STR} 后刷新本页面，即可查看您的专属报告。
                     </div>
                     <button class="btn-outline" onclick="location.reload()">刷新检查</button>
                 </div>
@@ -529,31 +698,64 @@ const UNLOCK_TIME_STR = "4月24日 13:15";
             <div class="intro-section">
                 <div class="logo">BV</div>
                 <h1>必维职业发展规划测评</h1>
-                <p class="subtitle">探索您的霍兰德职业兴趣代码</p>
-                
+                <p class="subtitle">在VUCA时代探索您的可持续职业发展路径</p>
+
                 <div class="context-banner">
-                    <h3>🎯 课前说明</h3>
-                    <p>完成测评后，结果将在<span style="color:var(--accent-light)">${UNLOCK_TIME_STR}</span>自动解锁。届时我们会用15分钟讲解霍兰德代码的含义，然后一起解读大家的结果。</p>
-                    <p style="margin-top:10px">💡 请如实作答，答案无对错之分。</p>
+                    <h3>🎯 培训背景与核心理念</h3>
+                    <p>在VUCA（易变、不确定、复杂、模糊）环境下，必维正在经历组织架构变革。本测评帮助您理解：<strong>无论是否有晋升机会，您都可以通过改变贡献方式来建立个人影响力，实现可持续的职业发展。</strong></p>
+                    <p style="margin-top: 10px; font-weight: 600;">💡 核心洞察：在职场中，影响力比职权更持久。真正的职业安全感来自于您能够影响他人、推动改变、创造价值的能力，而非职位头衔。</p>
+                    <p style="margin-top: 12px;">📅 完成测评后，您的<strong>专属测评报告</strong>将于 <span style="color:var(--accent-light);font-weight:700">${UNLOCK_TIME_STR}</span> 在本页面自动解锁，届时即可查看详细解读。</p>
+                    <p style="margin-top:10px">请如实作答，答案无对错之分。</p>
                 </div>
-                
+
                 <div class="intro-card">
+                    <h2>💡 TOP模型：职业巅峰状态</h2>
+                    <p>可持续职业发展的关键在于找到三个要素的交汇点：</p>
+
+                    <div class="top-model">
+                        <h4>您的职业巅峰状态 =</h4>
+                        <ul>
+                            <li><strong>T - Talent（天赋技能）：</strong>您天生擅长且乐在其中的能力</li>
+                            <li><strong>O - Organizational Needs（组织需求）：</strong>必维当前及未来需要的能力</li>
+                            <li><strong>P - Passion（工作热情）：</strong>您真正热爱并愿意投入的工作内容</li>
+                        </ul>
+                    </div>
+
+                    <div class="influence-highlight">
+                        <h4>🌟 为什么影响力是职业长久的关键？</h4>
+                        <p>组织变革中，职位可能调整，部门可能重组，但<strong>个人的影响力是您可以随身携带的"职业资产"</strong>。通过改变贡献方式——从依靠他人到独立贡献，再到通过他人贡献，最终影响组织战略——您可以在任何岗位上持续扩大影响力半径，成为组织中不可或缺的"关键节点"。</p>
+                    </div>
+
+                    <div class="ai-highlight">
+                        <h4>🤖 AI时代的影响力建设</h4>
+                        <p>人工智能正在重塑检验检测认证行业。善于利用AI工具提升效率、创造新价值的人，将在新一轮职业洗牌中占据优势。<strong>将AI作为能力放大器，而非威胁</strong>，是当代职场人建立影响力的关键策略。本测评将为您提供如何与AI协同提升个人影响力的行动建议。</p>
+                    </div>
+
+                    <p>本测评通过<strong>霍兰德职业兴趣理论</strong>帮助您识别个人天赋与热情，结合您的从业经验和岗位特点，为您提供定制化的职业发展建议，<strong>其中会包含至少一项AI赋能的具体行动</strong>。</p>
+
+                    <div class="vuca-note">
+                        <h4>⚡ 关注"贡献方式"而非"职位"</h4>
+                        <p>在组织变革期，职位边界变得模糊，但组织始终需要价值创造。通过调整贡献方式（依靠他人→独立→通过他人→战略层面），您可以在当前岗位上创造更大影响力，实现个人成长与组织发展的双赢。</p>
+                    </div>
+
                     <div class="input-group">
                         <label>请选择您的从业年限</label>
                         <div class="experience-options">
                             <div class="experience-btn" data-exp="junior">
                                 <span class="exp-title">10年以下</span>
-                                <span class="exp-desc">重点提升专业能力</span>
+                                <span class="exp-desc">重点提升专业能力<br>逐步建立组织内部影响力</span>
                             </div>
                             <div class="experience-btn" data-exp="senior">
                                 <span class="exp-title">10年及以上</span>
-                                <span class="exp-desc">扩展行业影响力</span>
+                                <span class="exp-desc">巩固专业能力<br>扩展地理区域与行业领域影响力</span>
                             </div>
                         </div>
+                        <p class="input-hint" style="margin-top: 10px;">请选择您的从业年限以获取精准建议</p>
                     </div>
                     <div class="input-group">
-                        <label>请输入您当前的岗位名称</label>
-                        <input type="text" id="positionInput" placeholder="例如：质量工程师、项目经理...">
+                        <label for="positionInput">请输入您当前的岗位名称</label>
+                        <input type="text" id="positionInput" placeholder="例如：质量工程师、项目经理、销售代表..." required>
+                        <p class="input-hint">这将帮助我们为您生成更精准的影响力建设建议</p>
                     </div>
                 </div>
                 <button class="btn-primary" id="startQuizBtn" disabled>开始测评</button>
