@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOP模型 - 职业巅峰状态</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f1f3d 0%, #1e3a5f 50%, #2a4a73 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 900px;
+            height: 700px;
+            position: relative;
+        }
+
+        /* 背景装饰粒子 */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(201, 169, 110, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            33% { transform: translateY(-30px) translateX(20px); opacity: 0.8; }
+            66% { transform: translateY(20px) translateX(-15px); opacity: 0.5; }
+        }
+
+        /* 标题 */
+        .title {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 4px;
+            opacity: 0;
+            animation: fadeInDown 1s ease-out 0.5s forwards;
+        }
+
+        .subtitle {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeInDown 1s ease-out 0.8s forwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 中心区域 */
+        .center-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 400px;
+        }
+
+        /* 三个圆圈 */
+        .circle {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .circle-t {
+            border: 3px solid rgba(212, 101, 42, 0.8);
+            background: radial-gradient(circle, rgba(212, 101, 42, 0.15) 0%, transparent 70%);
+            color: #d4652a;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            animation: circleAppear 1s ease-out 1.5s forwards, moveToPosition 2s ease-in-out 3s forwards;
+        }
+
+        .circle-o {
+            border: 3px solid rgba(90, 122, 150, 0.8);
+            background: radial-gradient(circle, rgba(90, 122, 150, 0.15) 0%, transparent 70%);
+            color: #5a7a96;
+            bottom: 20px;
+            left: 60px;
+            transform: scale(0);
+            animation: circleAppear 1s ease-out 2s forwards, moveToPositionO 2s ease-in-out 3s forwards;
+        }
+
+        .circle-p {
+            border: 3px solid rgba(201, 169, 110, 0.8);
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.15) 0%, transparent 70%);
+            color: #c9a96e;
+            bottom: 20px;
+            right: 60px;
+            transform: scale(0);
+            animation: circleAppear 1s ease-out 2.5s forwards, moveToPositionP 2s ease-in-out 3s forwards;
+        }
+
+        @keyframes circleAppear {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 汇聚动画 - 向中心移动并重叠 */
+        @keyframes moveToPosition {
+            0% { top: 20px; left: 50%; transform: translateX(-50%); }
+            100% { top: 80px; left: 50%; transform: translateX(-50%); }
+        }
+
+        @keyframes moveToPositionO {
+            0% { bottom: 20px; left: 60px; }
+            100% { bottom: 80px; left: 80px; }
+        }
+
+        @keyframes moveToPositionP {
+            0% { bottom: 20px; right: 60px; }
+            100% { bottom: 80px; right: 80px; }
+        }
+
+        .circle .letter {
+            font-size: 48px;
+            margin-bottom: 5px;
+        }
+
+        .circle .label {
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+
+        .circle .desc {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* 重叠区域 - 职业巅峰状态 */
+        .overlap-zone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.9) 0%, rgba(212, 101, 42, 0.6) 50%, transparent 70%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            filter: blur(10px);
+            animation: overlapAppear 2s ease-out 5s forwards, pulse 3s ease-in-out 7s infinite;
+        }
+
+        @keyframes overlapAppear {
+            0% { opacity: 0; filter: blur(20px); transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 0.8; filter: blur(5px); transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 1; filter: blur(0px); transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 30px rgba(201, 169, 110, 0.4); }
+            50% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 50px rgba(201, 169, 110, 0.7); }
+        }
+
+        .overlap-zone .peak-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            line-height: 1.4;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .overlap-zone .peak-sub {
+            font-size: 12px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 5px;
+        }
+
+        /* 连接线 */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            animation: lineAppear 1.5s ease-out 6s forwards;
+        }
+
+        .line-t-o {
+            top: 190px;
+            left: 140px;
+            width: 120px;
+            transform: rotate(30deg);
+            transform-origin: left center;
+        }
+
+        .line-t-p {
+            top: 190px;
+            right: 140px;
+            width: 120px;
+            transform: rotate(-30deg);
+            transform-origin: right center;
+        }
+
+        .line-o-p {
+            bottom: 170px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+        }
+
+        @keyframes lineAppear {
+            from { opacity: 0; width: 0; }
+            to { opacity: 1; width: 120px; }
+        }
+
+        /* 底部说明 */
+        .bottom-note {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 7s forwards;
+        }
+
+        .bottom-note p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 动态数据标签 */
+        .data-tag {
+            position: absolute;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            animation: tagAppear 0.8s ease-out 8s forwards;
+        }
+
+        .tag-t {
+            top: 60px;
+            right: 100px;
+            background: rgba(212, 101, 42, 0.2);
+            color: #d4652a;
+            border: 1px solid rgba(212, 101, 42, 0.4);
+        }
+
+        .tag-o {
+            bottom: 140px;
+            left: 20px;
+            background: rgba(90, 122, 150, 0.2);
+            color: #5a7a96;
+            border: 1px solid rgba(90, 122, 150, 0.4);
+        }
+
+        .tag-p {
+            bottom: 140px;
+            right: 20px;
+            background: rgba(201, 169, 110, 0.2);
+            color: #c9a96e;
+            border: 1px solid rgba(201, 169, 110, 0.4);
+        }
+
+        @keyframes tagAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 光晕效果 */
+        .glow-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(201, 169, 110, 0.1);
+            border-radius: 50%;
+            opacity: 0;
+            animation: glowExpand 4s ease-out 6s forwards;
+        }
+
+        @keyframes glowExpand {
+            0% { opacity: 0; width: 200px; height: 200px; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0; width: 500px; height: 500px; }
+        }
+
+        /* 循环呼吸提示 */
+        .breath-hint {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 3px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 9s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 品牌标识 */
+        .brand {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 背景粒子 -->
+        <div class="particle" style="top:10%; left:15%; animation-delay:0s;"></div>
+        <div class="particle" style="top:20%; left:80%; animation-delay:2s;"></div>
+        <div class="particle" style="top:70%; left:10%; animation-delay:4s;"></div>
+        <div class="particle" style="top:80%; left:85%; animation-delay:1s;"></div>
+        <div class="particle" style="top:40%; left:5%; animation-delay:3s;"></div>
+        <div class="particle" style="top:60%; left:90%; animation-delay:5s;"></div>
+
+        <!-- 品牌 -->
+        <div class="brand">礼淮咨询 | Jamon Consulting</div>
+
+        <!-- 标题 -->
+        <div class="title">职业巅峰状态的 TOP 模型</div>
+        <div class="subtitle">Talent · Organization · Passion</div>
+
+        <!-- 中心区域 -->
+        <div class="center-area">
+            <!-- 光晕 -->
+            <div class="glow-ring"></div>
+
+            <!-- 三个圆圈 -->
+            <div class="circle circle-t">
+                <div class="letter">T</div>
+                <div class="label">天赋</div>
+                <div class="desc">Talent</div>
+            </div>
+
+            <div class="circle circle-o">
+                <div class="letter">O</div>
+                <div class="label">组织需求</div>
+                <div class="desc">Organization</div>
+            </div>
+
+            <div class="circle circle-p">
+                <div class="letter">P</div>
+                <div class="label">热情</div>
+                <div class="desc">Passion</div>
+            </div>
+
+            <!-- 重叠区域 -->
+            <div class="overlap-zone">
+                <div class="peak-text">职业巅峰<br>状态</div>
+                <div class="peak-sub">Peak Performance</div>
+            </div>
+
+            <!-- 连接线 -->
+            <div class="connection-line line-t-o"></div>
+            <div class="connection-line line-t-p"></div>
+            <div class="connection-line line-o-p"></div>
+        </div>
+
+        <!-- 数据标签 -->
+        <div class="data-tag tag-t">核心优势区</div>
+        <div class="data-tag tag-o">价值贡献区</div>
+        <div class="data-tag tag-p">能量驱动区</div>
+
+        <!-- 底部说明 -->
+        <div class="bottom-note">
+            <p>当三者交汇，个体进入最佳贡献区</p>
+        </div>
+
+        <div class="breath-hint">动态平衡 · 持续调适</div>
+    </div>
+
+    <script>
+        // 页面加载完成后，添加交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const circles = document.querySelectorAll('.circle');
+            const overlapZone = document.querySelector('.overlap-zone');
+
+            // 鼠标悬停时暂停呼吸动画，显示详细信息
+            overlapZone.addEventListener('mouseenter', function() {
+                this.style.animationPlayState = 'paused';
+                this.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+
+            overlapZone.addEventListener('mouseleave', function() {
+                this.style.animationPlayState = 'running';
+                this.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+
+            // 圆圈悬停效果
+            circles.forEach(circle => {
+                circle.addEventListener('mouseenter', function() {
+                    this.style.transform += ' scale(1.1)';
+                    this.style.zIndex = '10';
+                });
+                circle.addEventListener('mouseleave', function() {
+                    this.style.transform = this.style.transform.replace(' scale(1.1)', '');
+                    this.style.zIndex = '1';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
